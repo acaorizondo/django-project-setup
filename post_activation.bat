@@ -15,4 +15,22 @@ pipenv run pip install mysqlclient
 pipenv run python manage.py makemigrations
 pipenv run python manage.py migrate
 
+rem crear carpetas para templates y archivos estáticos a nivel de proyecto
+mkdir templates
+mkdir static
+cd static
+mkdir js
+mkdir css
+mkdir img
+
+rem crear carpetas para templates y archivos estáticos a nivel de aplicación
+cd ..
+cd !app_name!
+mkdir templates
+mkdir static
+cd static
+mkdir js
+mkdir css
+mkdir img
+
 endlocal

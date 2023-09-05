@@ -1,12 +1,13 @@
 import subprocess
 import os
-from editSettings import addInstaledAPPS
+from editSettings import addInstaledAPPS, updateStatics, updateTemplatesDir
+from editUrls import  createAppUrls, editProjectUrls
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
-project_name = 'mi_proyecto'
-app_name = 'mi_app'
+project_name = 'my_project'
+app_name = 'my_app'
 
 # instalar pipenv si no está instalado
 subprocess.run(["pip","install","pipenv"], shell=True)
@@ -15,7 +16,8 @@ subprocess.run(['python','--version'], shell=True)
 # Instalar Django
 subprocess.run(["pipenv", "install", "django"], shell=True)
 
-# activar el entorno virtual
+# activar el entorno virtual, crear proyecto django y aplicación, 
+# instalar django rest framework, ejecutar migraciones, crear templates y statics folders
 script_bat = 'post_activation.bat'
 subprocess.run([script_bat, project_name, app_name], shell=True)
 
@@ -25,13 +27,15 @@ new_apps=[f"{app_name}", 'rest_framework']
 settings_path = os.path.join(current_directory, project_directory)
 addInstaledAPPS(settings_path, new_apps)
 
+# agregar las direcciones de los archivos estáticos
+statics_dirs=[app_name]
+updateStatics(settings_path, statics_dirs)
+
+# agregar las ubicaciones de los templates
+updateTemplatesDir(settings_path, app_name)
+
 # Crear el archivo urls.py en la carpeta de la aplicación
-urls_content = "from django.urls import path, include\n\n"
-urls_content += "urlpatterns = [\n"
-urls_content += "]"
+createAppUrls(project_name, app_name, current_directory)
 
-urls_file_path = f"{project_name}\\{app_name}\\urls.py"
-urls_path=os.path.join(current_directory, urls_file_path)
-
-with open(urls_path, "w") as urls_file:
-    urls_file.write(urls_content)
+# Añadir la ruta a las urls de la aplicación en el proyecto
+editProjectUrls(project_name, app_name, current_directory)
